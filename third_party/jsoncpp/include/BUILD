@@ -8,5 +8,6 @@ cc_import(
   name = "libjsoncpp",
   hdrs = glob(["json/*.h"]),
   static_library = "libjsoncpp.a",
+  #shared_library = "libjsoncpp.so",
   visibility = ["//visibility:public"],
 )

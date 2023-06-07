@@ -1,12 +1,10 @@
 GCC		  = gcc
 GXX		  = g++
 
-CXXFLAGS := -std=c++17 -fpermissive -w
-INCLUDES := 
+# 向子目录输出全局变量
+export ROOT_DIR = $(shell pwd)
 
-export WEBRTC_DIR = /home/ping/code/third_party/webrtc_src/src
-
-SUBDIRS 	= src/lib #src/main
+SUBDIRS = src/shared_lib src/static_lib src/static_shared_lib src/main
 
 all:
 	mkdir -p "./bin"

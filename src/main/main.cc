@@ -2,14 +2,20 @@
 #include <string>
 
 #include "json/json.h" // 头文件从包所在位置开始
-#include "my_math.h"
+
+#include "shared_lib.h"
+#include "static_lib.h"
+#include "static_shared_lib.h"
 
 int main(int argc, char** argv) {
     std::cout << "this is a c++ example..." << std::endl;
-    std::cout << "3 + 4 = " << add(3, 4) << std::endl;
+
+    PrintShardInfo();
+    PrintStaticInfo();
+    PrintStaticSharedInfo();
 
     Json::Value value;
-    value["key"] = "value";
+    value["jsoncpp"] = "test";
     std::string str = value.toStyledString();
     std::cout << str << std::endl;
     return 0;
