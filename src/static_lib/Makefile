@@ -61,4 +61,4 @@ all: $(OBJS)
 	$(AR) -crs -o $(ROOT_DIR)/bin/$(TARGET)$(TARGET_EXT) $^
 
 clean: 
-	$(RM) $(OBJS) $(TARGET)$(TARGET_EXT)
+	$(RM) $(OBJS) $(ROOT_DIR)/bin/$(TARGET)$(TARGET_EXT)

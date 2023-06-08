@@ -36,7 +36,7 @@ endif
 # 系统编译参数
 ifeq ($(OS), Linux)
     CFLAGS += -fPIC -DWEBRTC_POSIX -DWEBRTC_LINUX
-    LDFLAGS += -Wl,--rpath=
+    LDFLAGS += -Wl,--rpath=$(ROOT_DIR)/bin/
 endif
 
 # 宏定义
@@ -57,7 +57,7 @@ default: all
 	$(GXX) $(CXXFLAGS) $(INC_FLAGS) -c $< -o $@
 
 all: $(OBJS)
-	$(GXX) -o $(TARGET)$(TARGET_EXT) $^ $(CXXFLAGS) $(INC_FLAGS) $(LDFLAGS)
+	$(GXX) -o $(ROOT_DIR)/bin/$(TARGET)$(TARGET_EXT) $^ $(CXXFLAGS) $(INC_FLAGS) $(LDFLAGS)
 
 clean: 
-	$(RM) $(OBJS) $(TARGET)$(TARGET_EXT)
+	$(RM) $(OBJS) $(ROOT_DIR)/bin/$(TARGET)$(TARGET_EXT)
