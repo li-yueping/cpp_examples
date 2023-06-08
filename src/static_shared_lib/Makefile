@@ -1,12 +1,11 @@
 GCC = gcc
 GXX = g++
-AR  = ar
 
 USE_DEBUG = 0
 
 # 目标文件
-TARGET := libstatic_lib
-TARGET_EXT := .a
+TARGET := libstatic_shared_lib
+TARGET_EXT := .so
 
 # 源文件路径
 SRC_PATH := ./
@@ -58,7 +57,8 @@ default: all
 	$(GXX) $(CXXFLAGS) $(INC_FLAGS) -c $< -o $@
 
 all: $(OBJS)
-	$(AR) -crs -o $(ROOT_DIR)/bin/$(TARGET)$(TARGET_EXT) $^
+	$(GXX) -shared -o $(ROOT_DIR)/bin/$(TARGET)$(TARGET_EXT) $^ $(CXXFLAGS) $(INC_FLAGS) $(LDFLAGS)
+	$(AR) -crs $(ROOT_DIR)/bin/$(TARGET).a $^
 
 clean: 
 	$(RM) $(OBJS) $(TARGET)$(TARGET_EXT)
