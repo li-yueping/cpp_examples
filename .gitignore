@@ -1,3 +1,5 @@
 bazel-*
 bin
 *.o
+**/build/*
+lib
