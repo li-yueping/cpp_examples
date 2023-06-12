@@ -34,6 +34,44 @@ else()
 endif()
 ]]
 
+#-------------------------头文件路径-------------------------
+# 设置头文件路径
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../include)
+else()
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../shared_lib)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../static_lib)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../static_shared_lib)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/jsoncpp/include)
+endif()
+
+# 打印头文件路径
+get_property(INC_DIRS DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+foreach(INC_DIR ${INC_DIRS})
+    message(STATUS "    include directory='${INC_DIR}'")
+endforeach()
+
+#-------------------------库文件路径-------------------------
+# 设置库文件路径
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+    if(CMAKE_BUILD_TYPE MATCHES Debug)
+    else()
+    endif()
+else() # not windows
+    link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../lib)
+    link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/jsoncpp/lib)
+    #LINK_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/jsoncpp/lib/${CMAKE_SYSTEM_PROCESSOR})
+    if(CMAKE_BUILD_TYPE MATCHES Debug)
+    else()
+    endif()
+endif()
+
+# 打印库文件路径
+get_property(LINK_DIRS DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY LINK_DIRECTORIES)
+foreach(LINK_DIR ${LINK_DIRS})
+    message(STATUS "    link directory='${LINK_DIR}'")
+endforeach()
+
 #-------------------------工程源文件-------------------------
 #[[
 # 自动查找当前文件夹中的所有相关文件
@@ -79,44 +117,6 @@ source_group(Form Files FILES
 )
 ]]
 
-#-------------------------头文件路径-------------------------
-# 设置头文件路径
-if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../include)
-else()
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../shared_lib)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../static_lib)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../static_shared_lib)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/jsoncpp/include)
-endif()
-
-# 打印头文件路径
-get_property(INC_DIRS DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-foreach(INC_DIR ${INC_DIRS})
-    message(STATUS "    include directory='${INC_DIR}'")
-endforeach()
-
-#-------------------------库文件路径-------------------------
-# 设置库文件路径
-if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-    if(CMAKE_BUILD_TYPE MATCHES Debug)
-    else()
-    endif()
-else() # not windows
-    link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../lib)
-    link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/jsoncpp/lib)
-    #LINK_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/jsoncpp/lib/${CMAKE_SYSTEM_PROCESSOR})
-    if(CMAKE_BUILD_TYPE MATCHES Debug)
-    else()
-    endif()
-endif()
-
-# 打印库文件路径
-get_property(LINK_DIRS DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY LINK_DIRECTORIES)
-foreach(LINK_DIR ${LINK_DIRS})
-    message(STATUS "    link directory='${LINK_DIR}'")
-endforeach()
-
 #-------------------------生成目标-------------------------
 # 设置目标文件输出位置
 if (WIN32)
@@ -131,6 +131,12 @@ endif()
 
 # 若使用link_libraries链接库文件，必须放在生成目标之前
 # link_libraries(jsoncpp)
+
+#set_property(TARGET ${BUILD_PROJECT_NAME} PROPERTY FOLDER ${PROJECT_SET_NAME_SERVER})
+
+# 设置工作路径
+#set_target_properties(${BUILD_PROJECT_NAME} PROPERTIES 
+#    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../bin/vsnet")
 
 # 生成目标
 add_executable(${BUILD_PROJECT_NAME} ${SRC_LIST})

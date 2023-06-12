@@ -17,68 +17,6 @@ else()
     add_definitions(-DLinux)
 endif()
 
-#[[
-# 配置qt相关环境
-set(CMAKE_AUTOMOC ON) # 设置自动生成moc文件,AUTOMOC打开可以省去QT5_WRAP_CPP命令
-set(CMAKE_AUTOUIC ON) # 设置自动生成ui.h文件,AUTOUIC打开可以省去QT5_WRAP_UI命令
-set(CMAKE_AUTORCC ON) # 【optional】设置自动处理.qrc文件
-
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)  # qt自动查找，需要将Qt的bin路径加入到环境变量PATH中
-#set(CMAKE_PREFIX_PATH "D:\\Qt\\5.15.2\\msvc2019_64\\")     # qt路径手动设置
-#set(Qt5_DIR "D:\\Qt\\5.15.2\\msvc2019_64\\lib\\cmake\\Qt5")# qt路径手动设置
-message(STATUS "QT_VERSION_MAJOR = '${QT_VERSION_MAJOR}'")
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-  find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Gui OpenGLWidgets)
-else()
-  find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Gui)
-endif()
-]]
-
-#-------------------------工程源文件-------------------------
-#[[
-# 自动查找当前文件夹中的所有相关文件
-file(GLOB SOURCE_FILES "./*.cpp") 
-file(GLOB HEADER_FILES "./*.h") 
-file(GLOB UI_FILES "./*.ui")
-QT5_WRAP_UI(WRAP_FILES ${UI_FILES})  # 通过Ui文件生成对应的头文件
-set(RCC_FILES rcc.qrc)               # 添加资源文件
-source_group("UI" FILES ${UI_FILES} ${WRAP_FILES} )# 【optional】生成UI文件夹
-add_extcutable(${PROJECT_NAME} ${SOURCE_FILES } ${HEADER_FILES} ${RCC_FILES} ${WRAP_FILES}) # 生成可执行文件，需添加RCC_FILES、WRAP_FILES
-]]
-set(SRC_LIST
-    ${CMAKE_CURRENT_SOURCE_DIR}/static_shared_lib.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/static_shared_lib.h
-#[[
-	${CMAKE_CURRENT_SOURCE_DIR}/my_player.ui
-	${CMAKE_CURRENT_SOURCE_DIR}/my_player.qrc
-	${CMAKE_CURRENT_SOURCE_DIR}/my_player.rc
-	${CMAKE_CURRENT_SOURCE_DIR}/my_player.ico
-]]
-)
-
-# 头文件
-source_group(Header Files FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/static_shared_lib.h
-)
-
-# 源文件
-source_group(Src Files FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/static_shared_lib.cc
-)
-#[[
-# 资源文件
-source_group(Resource Files FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/my_player.qrc
-	${CMAKE_CURRENT_SOURCE_DIR}/my_player.rc
-	${CMAKE_CURRENT_SOURCE_DIR}/my_player.ico
-)
-
-# ui 文件
-source_group(Form Files FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/my_player.ui
-)
-]]
-
 #-------------------------头文件路径-------------------------
 # 设置头文件路径
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
@@ -113,6 +51,29 @@ foreach(LINK_DIR ${LINK_DIRS})
     message(STATUS "    link directory='${LINK_DIR}'")
 endforeach()
 
+#-------------------------工程源文件-------------------------
+#[[
+# 自动查找当前文件夹中的所有相关文件
+file(GLOB SOURCE_FILES "./*.cpp") 
+file(GLOB HEADER_FILES "./*.h") 
+add_extcutable(${PROJECT_NAME} ${SOURCE_FILES } ${HEADER_FILES})
+]]
+
+set(SRC_LIST
+    ${CMAKE_CURRENT_SOURCE_DIR}/static_shared_lib.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/static_shared_lib.h
+)
+
+# 头文件
+source_group(Header Files FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/static_shared_lib.h
+)
+
+# 源文件
+source_group(Src Files FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/static_shared_lib.cc
+)
+
 #-------------------------生成目标-------------------------
 # 设置目标文件输出位置
 if (WIN32)
@@ -128,7 +89,11 @@ endif()
 #link_libraries(jsoncpp)
 # 设置Debug|Release目标后缀，Debug模式下将在${BUILD_PROJECT_NAME}后加'd'，即文件名为'${BUILD_PROJECT_NAME}d'
 set(CMAKE_DEBUG_POSTFIX "d")
-add_library(${BUILD_PROJECT_NAME} SHARED ${SRC_LIST})
+add_library(${BUILD_PROJECT_NAME} SHARED ${SRC_LIST})   # 动态库
+add_library(${BUILD_PROJECT_NAME}s STATIC ${SRC_LIST})  # 静态库
+
+set_target_properties(${BUILD_PROJECT_NAME}s PROPERTIES  OUTPUT_NAME ${BUILD_PROJECT_NAME}) # 将静态库进行重命名与动态库名称相同，只是后缀不同
+set_target_properties(${BUILD_PROJECT_NAME}s PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 
 # target_link_libraries 必须放在生成目标后面
 # target_link_libraries(${BUILD_PROJECT_NAME} jsoncpp)

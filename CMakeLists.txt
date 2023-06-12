@@ -4,7 +4,7 @@
 
 cmake_minimum_required(VERSION 3.22)
 
-project()(cxx_examples)
+project(cxx_examples)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fPIC")
 if (BUILD_CHECK_MEMORY)
